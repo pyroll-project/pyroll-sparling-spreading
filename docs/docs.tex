@@ -1,0 +1,73 @@
+\documentclass[11pt]{PyRollDocs}
+\usepackage{textcomp}
+
+\addbibresource{refs.bib}
+
+% Document
+\begin{document}
+
+    \title{The Sparling Spreading PyRoll Plugin}
+    \author{Christoph Renzing}
+    \date{\today}
+
+    \maketitle
+
+    This plugin provides a spreading modelling approach with Sparling's formula for flat rolling, adapted on groove rolling by an equivalent rectangle approach.
+
+
+    \section{Model approach}\label{sec:model-approach}
+
+    \subsection{Sparling's spread equation}\label{subsec:sparling's-spread-equation}
+
+    \textcite{Sparling1961} proposed \autoref{eq:sparling} for estimation of spreading in flat rolling,
+    $h$ and $b$ are height and width of the workpiece with the indices 0 and 1 denoting the incoming respectively the outgoing profile.
+    $a$, $b$, $f$, $g$ and $j$ are correction coefficients for roll surface, bar surface, material, temperature and strain rate, respectively.
+
+    \begin{equation}
+        \beta = \frac{b_1}{b_0} =  \frac{h_0}{h_1} ^{w a b f g j}
+        \label{eq:sparling}
+    \end{equation}
+
+
+    $w$ is the spread exponent and given by \textcite{Sparling1961} is given in \autoref{eq:exponent}, where $R$ is the roll radius.
+
+    \begin{equation}
+        w = 0.981 \exp \left[ -0.6735 \left( \frac{2.395 b_0^{0.9}}{R^{0.55} h_0^{0.1} \Delta h^{0.25} } \right) \right]
+        \label{eq:exponent}
+    \end{equation}
+
+
+    \section{Usage instructions}\label{sec:usage-instructions}
+
+    The plugin can be loaded under the name \texttt{pyroll\_sparling\_spreading}.
+
+    An implementation of the \lstinline{spread} hook on \lstinline{RollPass} is provided,
+    calculating the spread using the equivalent rectangle approach and Sparling's model.
+
+    Several additional hooks on \lstinline{RollPass} are defined, which are used in spread calculation, as listed in \autoref{tab:hookspecs}.
+    Base implementations of them are provided, so it should work out of the box.
+    For \lstinline{sparling_exponent} the equations~\ref{eq:exponent} is implemented.
+    The others default to \num{1}.
+    Provide your own hook implementations or set attributes on the \lstinline{RollPass} instances to alter the spreading behavior.
+
+    \begin{table}
+        \centering
+        \caption{Hooks specified by this plugin. Symbols as in \autoref{eq:sparling}.}
+        \label{tab:hookspecs}
+        \begin{tabular}{ll}
+            \toprule
+            Hook name                                     & Meaning                                 \\
+            \midrule
+            \texttt{sparling\_roll\_surface\_coefficient} & roll surface correction coefficient $a$ \\
+            \texttt{sparling\_bar\_surface\_coefficient}  & bar surface correction coefficient $b$  \\
+            \texttt{sparling\_velocity\_coefficient}      & material correction coefficient $f$     \\
+            \texttt{sparling\_material\_coefficient}      & temperature correction coefficient $g$  \\
+            \texttt{sparling\_friction\_coefficient}      & strain rate correction coefficient $j$  \\
+            \texttt{sparling\_exponent}                   & spread exponent $w$                     \\
+            \bottomrule
+        \end{tabular}
+    \end{table}
+
+    \printbibliography
+
+\end{document}
