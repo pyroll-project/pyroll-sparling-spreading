@@ -35,7 +35,7 @@ def sparling_exponent(roll_pass: RollPass):
 
     return 0.981 * np.exp(
         -0.6735 * ((2.395 * in_equivalent_width ** 0.9) / (
-                    roll_pass.roll.nominal_radius ** 0.55 * in_equivalent_height ** 0.1 * equivalent_height_change ** 0.25)))
+                    roll_pass.roll.working_radius ** 0.55 * in_equivalent_height ** 0.1 * equivalent_height_change ** 0.25)))
 
 
 @RollPass.hookimpl
