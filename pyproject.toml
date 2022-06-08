@@ -12,6 +12,13 @@ documentation = "https://github.com/pyroll-project/pyroll-sparling-spreading/blo
 packages = [
     { include = "pyroll/sparling_spreading" }
 ]
+readme = "README.md"
+classifiers = [
+    "Intended Audience :: Science/Research",
+    "Intended Audience :: Manufacturing",
+    "Operating System :: OS Independent",
+    "Topic :: Scientific/Engineering"
+]
 
 
 [tool.poetry.dependencies]
