@@ -53,13 +53,11 @@ def sparling_bar_surface_coefficient(roll_pass: RollPass):
 
 @RollPass.sparling_exponent
 def sparling_exponent(self: RollPass):
-    equivalent_height_change = self.in_profile.equivalent_height - self.out_profile.equivalent_height
-
     return 0.981 * np.exp(
         -0.6735 * ((2.395 * self.in_profile.equivalent_width ** 0.9) / (
                 self.roll.working_radius ** 0.55
                 * self.in_profile.equivalent_height ** 0.1
-                * equivalent_height_change ** 0.25
+                * (-self.abs_draught) ** 0.25
         ))
     )
 
