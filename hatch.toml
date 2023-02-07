@@ -12,6 +12,7 @@ dependencies = [
     "pytest ~= 7.0",
     "pyroll-report ~= 2.0.0b2"
 ]
+features = ["pillar-model"]
 
 [envs.docs]
 path = ""

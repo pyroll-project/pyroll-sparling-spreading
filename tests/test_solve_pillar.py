@@ -3,13 +3,18 @@ import webbrowser
 from pathlib import Path
 
 import pyroll.core
+import pytest
 from pyroll.core import Profile, PassSequence, RollPass, Roll, CircularOvalGroove, Transport, RoundGroove
 
 import pyroll.sparling_spreading
 
+DE_COUNT = 50
 
+
+@pytest.mark.skipif(not pyroll.sparling_spreading.PILLAR_MODEL_INSTALLED, reason="Pillar model is not installed.")
 def test_solve(tmp_path: Path, caplog):
     caplog.set_level(logging.INFO, logger="pyroll")
+    pyroll.pillar_model.PILLAR_COUNT = 30
 
     in_profile = Profile.square(
         side=24e-3,
@@ -37,6 +42,7 @@ def test_solve(tmp_path: Path, caplog):
                     contact_length=58e-3,
                 ),
                 gap=2e-3,
+                disk_element_count=DE_COUNT,
             ),
             Transport(
                 label="I => II",
@@ -54,6 +60,7 @@ def test_solve(tmp_path: Path, caplog):
                     rotational_frequency=1
                 ),
                 gap=2e-3,
+                disk_element_count=DE_COUNT,
             ),
         ]
     )
@@ -65,9 +72,9 @@ def test_solve(tmp_path: Path, caplog):
         print(caplog.text)
 
     try:
-        import pyroll.report
+        from pyroll.report import report
 
-        report = pyroll.report.report(sequence)
+        report = report(sequence)
         f = tmp_path / "report.html"
         f.write_text(report)
         webbrowser.open(f.as_uri())

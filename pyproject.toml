@@ -20,6 +20,11 @@ classifiers = [
 
 dynamic = ["version"]
 
+[project.optional-dependencies]
+pillar-model = [
+    "pyroll-pillar-model ~= 2.0b",
+]
+
 [project.urls]
 Homepage = "https://pyroll-project.github.io"
 Repository = "https://github.com/pyroll-project/pyroll-sparling-spreading"
