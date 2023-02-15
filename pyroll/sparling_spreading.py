@@ -1,10 +1,10 @@
 import importlib.util
 
 import numpy as np
-from pyroll.core import RollPass
+from pyroll.core import RollPass, ThreeRollPass
 from pyroll.core.hooks import Hook
 
-VERSION = "2.0.0b1"
+VERSION = "2.0.0b2"
 PILLAR_MODEL_INSTALLED = bool(importlib.util.find_spec("pyroll.pillar_model"))
 
 RollPass.sparling_temperature_coefficient = Hook[float]()
@@ -86,6 +86,17 @@ def width(self: RollPass.OutProfile):
     if not (PILLAR_MODEL_INSTALLED and rp.disk_elements):
         if not self.has_set_or_cached("width"):
             self.width = rp.roll.groove.usable_width
+
+        return rp.spread * rp.in_profile.width
+
+
+@ThreeRollPass.OutProfile.width
+def width(self: RollPass.OutProfile):
+    rp = self.roll_pass
+
+    if not (PILLAR_MODEL_INSTALLED and rp.disk_elements):
+        if not self.has_set_or_cached("width"):
+            self.width = 2 / 3 * np.sqrt(3) * (self.roll_pass.roll.groove.usable_width + self.roll_pass.gap / 2)
 
         return rp.spread * rp.in_profile.width
 
