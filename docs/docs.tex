@@ -43,6 +43,9 @@
 
     An implementation of the \lstinline{spread} hook on \lstinline{RollPass} is provided,
     calculating the spread using the equivalent rectangle approach and Sparling's model.
+    Also, an implementation of the \lstinline{pillar_spreads} hook on \lstinline{RollPass.DiskElement} is provided,
+    for using the spread equation with the pillar model approach.
+    This implementation is only provided, if \texttt{pyroll.pillar\_model} is installed.
 
     Several additional hooks on \lstinline{RollPass} are defined, which are used in spread calculation, as listed in \autoref{tab:hookspecs}.
     Base implementations of them are provided, so it should work out of the box.

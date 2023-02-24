@@ -8,7 +8,7 @@ authors = [
 license = "BSD-3-Clause"
 requires-python = ">=3.9, <4.0"
 dependencies = [
-    "pyroll-core ~= 2.0rc",
+    "pyroll-core ~= 2.0",
 ]
 readme = "README.md"
 classifiers = [
@@ -22,7 +22,7 @@ dynamic = ["version"]
 
 [project.optional-dependencies]
 pillar-model = [
-    "pyroll-pillar-model ~= 2.0rc",
+    "pyroll-pillar-model ~= 2.0",
 ]
 
 [project.urls]
