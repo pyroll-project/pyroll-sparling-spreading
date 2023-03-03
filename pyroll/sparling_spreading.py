@@ -4,7 +4,7 @@ import numpy as np
 from pyroll.core import RollPass, ThreeRollPass, root_hooks, Unit
 from pyroll.core.hooks import Hook
 
-VERSION = "2.0.0rc0"
+VERSION = "2.0.0"
 PILLAR_MODEL_INSTALLED = bool(importlib.util.find_spec("pyroll.pillar_model"))
 
 RollPass.sparling_temperature_coefficient = Hook[float]()
@@ -106,10 +106,7 @@ def width(self: RollPass.OutProfile):
         ) * rp.in_profile.width
 
 
-if PILLAR_MODEL_INSTALLED:
-    import pyroll.pillar_model
-
-
+try:
     @RollPass.DiskElement.pillar_spreads
     def pillar_spreads(self: RollPass.DiskElement):
         rp = self.roll_pass
@@ -124,3 +121,5 @@ if PILLAR_MODEL_INSTALLED:
                         * rp.sparling_bar_surface_coefficient
                 )
         )
+except AttributeError:
+    pass  # pillar_model not loaded

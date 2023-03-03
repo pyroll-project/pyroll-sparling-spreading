@@ -1,12 +1,17 @@
+import importlib
 import logging
 import webbrowser
 from pathlib import Path
 
+import numpy as np
 import pyroll.core
 import pytest
 from pyroll.core import Profile, PassSequence, RollPass, Roll, CircularOvalGroove, Transport, RoundGroove
 
 import pyroll.sparling_spreading
+import pyroll.pillar_model
+
+importlib.reload(pyroll.sparling_spreading)
 
 DE_COUNT = 50
 
@@ -81,3 +86,5 @@ def test_solve(tmp_path: Path, caplog):
 
     except ImportError:
         pass
+
+    assert not np.isclose(sequence[0].out_profile.width, sequence[0].in_profile.width)
