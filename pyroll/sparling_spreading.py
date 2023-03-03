@@ -64,23 +64,6 @@ def sparling_exponent(self: RollPass):
     )
 
 
-# noinspection PyUnresolvedReferences
-@RollPass.spread
-def spread(self: RollPass):
-    if not (PILLAR_MODEL_INSTALLED and self.disk_elements):
-        return (
-                self.draught
-                ** (
-                        -self.sparling_exponent
-                        * self.sparling_temperature_coefficient
-                        * self.sparling_strain_rate_coefficient
-                        * self.sparling_material_coefficient
-                        * self.sparling_roll_surface_coefficient
-                        * self.sparling_bar_surface_coefficient
-                )
-        )
-
-
 @RollPass.OutProfile.width
 def width(self: RollPass.OutProfile):
     rp = self.roll_pass
@@ -89,7 +72,17 @@ def width(self: RollPass.OutProfile):
         if not self.has_set_or_cached("width"):
             return None
 
-        return rp.spread * rp.in_profile.width
+        return (
+                rp.draught
+                ** (
+                        -rp.sparling_exponent
+                        * rp.sparling_temperature_coefficient
+                        * rp.sparling_strain_rate_coefficient
+                        * rp.sparling_material_coefficient
+                        * rp.sparling_roll_surface_coefficient
+                        * rp.sparling_bar_surface_coefficient
+                )
+        ) * rp.in_profile.width
 
 
 @ThreeRollPass.OutProfile.width
@@ -100,14 +93,23 @@ def width(self: RollPass.OutProfile):
         if not self.has_set_or_cached("width"):
             return None
 
-        return rp.spread * rp.in_profile.width
+        return (
+                rp.draught
+                ** (
+                        -rp.sparling_exponent
+                        * rp.sparling_temperature_coefficient
+                        * rp.sparling_strain_rate_coefficient
+                        * rp.sparling_material_coefficient
+                        * rp.sparling_roll_surface_coefficient
+                        * rp.sparling_bar_surface_coefficient
+                )
+        ) * rp.in_profile.width
 
 
 if PILLAR_MODEL_INSTALLED:
     import pyroll.pillar_model
 
 
-    # noinspection PyUnresolvedReferences
     @RollPass.DiskElement.pillar_spreads
     def pillar_spreads(self: RollPass.DiskElement):
         rp = self.roll_pass
