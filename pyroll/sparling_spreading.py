@@ -25,7 +25,7 @@ RollPass.sparling_bar_surface_coefficient = Hook[float]()
 RollPass.sparling_exponent = Hook[float]()
 """Exponent w for Sparling's spread equation."""
 
-root_hooks.add(Unit.OutProfile.equivalent_width)
+root_hooks.add(Unit.OutProfile.width)
 
 
 @RollPass.sparling_temperature_coefficient
@@ -64,12 +64,12 @@ def sparling_exponent(self: RollPass):
     )
 
 
-@RollPass.OutProfile.equivalent_width
-def equivalent_width(self: RollPass.OutProfile):
+@RollPass.OutProfile.width
+def width(self: RollPass.OutProfile):
     rp = self.roll_pass
 
     if not (PILLAR_MODEL_INSTALLED and rp.disk_elements):
-        if not self.has_set_or_cached("equivalent_width"):
+        if not self.has_set_or_cached("width"):
             return None
 
         return (
@@ -82,15 +82,15 @@ def equivalent_width(self: RollPass.OutProfile):
                         * rp.sparling_roll_surface_coefficient
                         * rp.sparling_bar_surface_coefficient
                 )
-        ) * rp.in_profile.equivalent_width
+        ) * rp.in_profile.width
 
 
-@ThreeRollPass.OutProfile.equivalent_width
-def equivalent_width(self: RollPass.OutProfile):
+@ThreeRollPass.OutProfile.width
+def width(self: RollPass.OutProfile):
     rp = self.roll_pass
 
     if not (PILLAR_MODEL_INSTALLED and rp.disk_elements):
-        if not self.has_set_or_cached("equivalent_width"):
+        if not self.has_set_or_cached("width"):
             return None
 
         return (
@@ -103,7 +103,7 @@ def equivalent_width(self: RollPass.OutProfile):
                         * rp.sparling_roll_surface_coefficient
                         * rp.sparling_bar_surface_coefficient
                 )
-        ) * rp.in_profile.equivalent_width
+        ) * rp.in_profile.width
 
 
 try:
