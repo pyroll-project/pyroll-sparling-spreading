@@ -69,7 +69,7 @@ def test_solve(tmp_path: Path, caplog):
 
         report = pyroll.report.report(sequence)
         f = tmp_path / "report.html"
-        f.write_text(report)
+        f.write_text(report, encoding="utf-8")
         webbrowser.open(f.as_uri())
 
     except ImportError:
