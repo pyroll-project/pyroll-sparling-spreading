@@ -1,60 +1,60 @@
-import importlib.util
-
+import logging
 import numpy as np
-from pyroll.core import BaseRollPass, root_hooks, Unit
+
+from pyroll.core import SymmetricRollPass, RollPass, root_hooks, Unit
 from pyroll.core.hooks import Hook
 
 VERSION = "3.0.0"
-PILLAR_MODEL_INSTALLED = bool(importlib.util.find_spec("pyroll.pillar_model"))
+PILLAR_MODEL_LOADED = False
 
-BaseRollPass.sparling_temperature_coefficient = Hook[float]()
+SymmetricRollPass.sparling_temperature_coefficient = Hook[float]()
 """Temperature correction factor g for Sparling's spread equation."""
 
-BaseRollPass.sparling_strain_rate_coefficient = Hook[float]()
+SymmetricRollPass.sparling_strain_rate_coefficient = Hook[float]()
 """Velocity correction factor j for Sparling's spread equation."""
 
-BaseRollPass.sparling_material_coefficient = Hook[float]()
+SymmetricRollPass.sparling_material_coefficient = Hook[float]()
 """Material correction factor f for Sparling's spread equation."""
 
-BaseRollPass.sparling_roll_surface_coefficient = Hook[float]()
+SymmetricRollPass.sparling_roll_surface_coefficient = Hook[float]()
 """Friction correction factor a for Sparling's spread equation."""
 
-BaseRollPass.sparling_bar_surface_coefficient = Hook[float]()
+SymmetricRollPass.sparling_bar_surface_coefficient = Hook[float]()
 """Friction correction factor b for Sparling's spread equation."""
 
-BaseRollPass.sparling_exponent = Hook[float]()
+SymmetricRollPass.sparling_exponent = Hook[float]()
 """Exponent w for Sparling's spread equation."""
 
 root_hooks.add(Unit.OutProfile.width)
 
 
-@BaseRollPass.sparling_temperature_coefficient
-def sparling_temperature_coefficient(roll_pass: BaseRollPass):
+@SymmetricRollPass.sparling_temperature_coefficient
+def sparling_temperature_coefficient(roll_pass: SymmetricRollPass):
     return 1
 
 
-@BaseRollPass.sparling_strain_rate_coefficient
-def sparling_strain_rate_coefficient(roll_pass: BaseRollPass):
+@SymmetricRollPass.sparling_strain_rate_coefficient
+def sparling_strain_rate_coefficient(roll_pass: SymmetricRollPass):
     return 1
 
 
-@BaseRollPass.sparling_material_coefficient
-def sparling_material_coefficient(roll_pass: BaseRollPass):
+@SymmetricRollPass.sparling_material_coefficient
+def sparling_material_coefficient(roll_pass: SymmetricRollPass):
     return 1
 
 
-@BaseRollPass.sparling_roll_surface_coefficient
-def sparling_roll_surface_coefficient(roll_pass: BaseRollPass):
+@SymmetricRollPass.sparling_roll_surface_coefficient
+def sparling_roll_surface_coefficient(roll_pass: SymmetricRollPass):
     return 1
 
 
-@BaseRollPass.sparling_bar_surface_coefficient
-def sparling_bar_surface_coefficient(roll_pass: BaseRollPass):
+@SymmetricRollPass.sparling_bar_surface_coefficient
+def sparling_bar_surface_coefficient(roll_pass: SymmetricRollPass):
     return 1
 
 
-@BaseRollPass.sparling_exponent
-def sparling_exponent(self: BaseRollPass):
+@SymmetricRollPass.sparling_exponent
+def sparling_exponent(self: SymmetricRollPass):
     return 0.981 * np.exp(
         -0.6735 * ((2.395 * self.in_profile.equivalent_width ** 0.9) / (
                 self.roll.working_radius ** 0.55
@@ -64,11 +64,11 @@ def sparling_exponent(self: BaseRollPass):
     )
 
 
-@BaseRollPass.OutProfile.width
-def width(self: BaseRollPass.OutProfile):
+@SymmetricRollPass.OutProfile.width
+def width(self: SymmetricRollPass.OutProfile):
     rp = self.roll_pass
 
-    if not (PILLAR_MODEL_INSTALLED and rp.disk_elements):
+    if not (PILLAR_MODEL_LOADED and rp.disk_elements):
         if not self.has_set_or_cached("width"):
             return None
 
@@ -86,8 +86,8 @@ def width(self: BaseRollPass.OutProfile):
 
 
 try:
-    @BaseRollPass.DiskElement.pillar_spreads
-    def pillar_spreads(self: BaseRollPass.DiskElement):
+    @RollPass.DiskElement.pillar_spreads
+    def pillar_spreads(self: SymmetricRollPass.DiskElement):
         rp = self.roll_pass
         return (
                 self.pillar_draughts
@@ -100,5 +100,9 @@ try:
                         * rp.sparling_bar_surface_coefficient
                 )
         )
+
+    PILLAR_MODEL_LOADED = True
+
+
 except AttributeError:
-    pass  # pillar_model not loaded
+    logging.getLogger(__name__).debug("Pillar model not loaded. Can not register respective hook function.")

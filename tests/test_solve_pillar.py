@@ -16,7 +16,18 @@ importlib.reload(pyroll.sparling_spreading)
 DE_COUNT = 50
 
 
-@pytest.mark.skipif(not pyroll.sparling_spreading.PILLAR_MODEL_INSTALLED, reason="Pillar model is not installed.")
+try:
+    import pyroll.pillar_model
+
+    importlib.reload(pyroll.sparling_spreading)
+
+    PILLAR_MODEL_LOADED = True
+
+except ImportError:
+    PILLAR_MODEL_LOADED = False
+
+
+@pytest.mark.skipif(not pyroll.sparling_spreading.PILLAR_MODEL_LOADED, reason="Pillar model is not installed.")
 def test_solve(tmp_path: Path, caplog):
     caplog.set_level(logging.INFO, logger="pyroll")
     pyroll.pillar_model.PILLAR_COUNT = 30
